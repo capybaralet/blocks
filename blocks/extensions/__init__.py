@@ -9,6 +9,7 @@ from toolz import first
 
 logger = logging.getLogger()
 
+import numpy
 
 def callback(func):
     func._is_callback = True
@@ -353,6 +354,17 @@ class SimpleExtension(TrainingExtension):
                 which_callback == 'before_batch'):
             return (args[0],), args[1:]
         return (), args
+
+
+class DumpAlgorithmParams(SimpleExtension):
+    def __init__(self, save_path, **kwargs):
+        super(DumpAlgorithmParams, self).__init__(**kwargs)
+        self.save_path = save_path
+
+    def do(self, which_callback, *args):
+        params = self.main_loop.algorithm.params
+        params_np = [numpy.array(p.eval()) for p in params]
+        numpy.save(self.save_path, params_np)
 
 
 class FinishAfter(SimpleExtension):

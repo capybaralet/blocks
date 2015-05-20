@@ -494,6 +494,12 @@ class Rectifier(Activation):
         return tensor.switch(input_ > 0, input_, 0)
 
 
+class TRectifier(Activation):
+    @application(inputs=['input_'], outputs=['output'])
+    def apply(self, input_):
+        return tensor.switch(input_ > 1, input_, 0)
+
+
 class Softmax(Activation):
     @application(inputs=['input_'], outputs=['output'])
     def apply(self, input_):

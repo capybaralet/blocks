@@ -9,12 +9,15 @@ from blocks.bricks.base import application, Brick
 floatX = theano.config.floatX
 
 
+
 @add_metaclass(ABCMeta)
 class Cost(Brick):
     @abstractmethod
     @application
     def apply(self, y, y_hat):
         pass
+
+
 
 
 @add_metaclass(ABCMeta)
@@ -67,3 +70,15 @@ class MisclassificationRate(Cost):
     def apply(self, y, y_hat):
         return (tensor.sum(tensor.neq(y, y_hat.argmax(axis=1))) /
                 y.shape[0].astype(floatX))
+
+"""`
+class BatchCost(Cost):
+    @application(outputs=["cost"])
+    def apply(self, y, y_hat):
+        return (tensor.sum(tensor.neq(y, y_hat.argmax(axis=1))) /
+                y.shape[0].astype(floatX))
+
+
+'""
+
+
