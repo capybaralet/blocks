@@ -1,3 +1,4 @@
+import blocks
 from codecs import open
 from os import path
 from setuptools import find_packages, setup
@@ -11,10 +12,10 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='blocks',
-    version='0.1a1',  # PEP 440 compliant
+    version=blocks.__version__,  # PEP 440 compliant
     description='A Theano framework for building and training neural networks',
     long_description=long_description,
-    url='https://github.com/bartvm/blocks',
+    url='https://github.com/mila-udem/blocks',
     author='University of Montreal',
     license='MIT',
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers

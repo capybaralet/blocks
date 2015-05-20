@@ -6,7 +6,7 @@ import numpy
 from picklable_itertools.extras import equizip
 from theano import config, function, tensor
 
-from blocks.bricks.sequence_generators import SequenceGenerator
+from blocks.bricks.sequence_generators import BaseSequenceGenerator
 from blocks.filter import VariableFilter, get_application_call, get_brick
 from blocks.graph import ComputationGraph
 from blocks.roles import INPUT, OUTPUT
@@ -60,7 +60,7 @@ class BeamSearch(object):
         cg = ComputationGraph(samples)
         self.inputs = cg.inputs
         self.generator = get_brick(samples)
-        if not isinstance(self.generator, SequenceGenerator):
+        if not isinstance(self.generator, BaseSequenceGenerator):
             raise ValueError
         self.generate_call = get_application_call(samples)
         if (not self.generate_call.application ==
@@ -111,7 +111,7 @@ class BeamSearch(object):
                                       roles=[OUTPUT])(self.inner_cg)[-1]
                        for name in self.state_names]
         next_outputs = VariableFilter(
-            applications=self.generator.readout.emit, roles=[OUTPUT])(
+            applications=[self.generator.readout.emit], roles=[OUTPUT])(
                 self.inner_cg.variables)
         self.next_state_computer = function(
             self.contexts + self.input_states + next_outputs, next_states)
@@ -121,7 +121,7 @@ class BeamSearch(object):
         # (in terms of computations) variables, and we do not care
         # which to use.
         probs = VariableFilter(
-            applications=self.generator.readout.emitter.probs,
+            applications=[self.generator.readout.emitter.probs],
             roles=[OUTPUT])(self.inner_cg)[0]
         logprobs = -tensor.log(probs)
         self.logprobs_computer = function(
