@@ -511,13 +511,13 @@ class Rectifier(Activation):
         return tensor.switch(input_ > 0, input_, 0)
 
 
-class Softmax(Brick):
-    """A softmax brick.
+class TRectifier(Activation):
+    @application(inputs=['input_'], outputs=['output'])
+    def apply(self, input_):
+        return tensor.switch(input_ > 1, input_, 0)
 
-    Works with 2-dimensional inputs only. If you need more,
-    see :class:`NDimensionalSoftmax`.
 
-    """
+class Softmax(Activation):
     @application(inputs=['input_'], outputs=['output'])
     def apply(self, input_):
         """Standard softmax.

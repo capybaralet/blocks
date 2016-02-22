@@ -7,12 +7,15 @@ from six import add_metaclass
 from blocks.bricks.base import application, Brick
 
 
+
 @add_metaclass(ABCMeta)
 class Cost(Brick):
     @abstractmethod
     @application
     def apply(self, *args, **kwargs):
         pass
+
+
 
 
 @add_metaclass(ABCMeta)
@@ -102,3 +105,15 @@ class MisclassificationRate(Cost):
             num_higher = higher_scoring.sum(axis=1) - 1
             mistakes = tensor.ge(num_higher, top_k)
         return mistakes.mean(dtype=theano.config.floatX)
+
+"""
+class BatchCost(Cost):
+    @application(outputs=["cost"])
+    def apply(self, y, y_hat):
+        return (tensor.sum(tensor.neq(y, y_hat.argmax(axis=1))) /
+                y.shape[0].astype(floatX))
+
+
+"""
+
+
