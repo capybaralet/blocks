@@ -886,3 +886,33 @@ class Restrict(StepRule):
                              else (parameter, previous_steps[parameter])
                              for parameter in previous_steps)
         return actual, updates
+
+
+
+# TODO: how to use the updated params?
+class NormalizeParameters(StepRule):
+    """
+    Specify the norm for each feature after each update.
+    Returns the appropriate updates to make this happen.
+
+    We assume that features are indexed in the 0-th dimension of an array.
+
+    Parameters
+    ----------
+    feature_norm : float, optional
+        The norm for each feature after updates. Defaults to 1.
+
+    Notes
+    -----
+    This rule should be applied last!
+    This rule should be applied to weight matrices only! (NOT biases!)
+    """
+    def __init__(self, feature_norm=1):
+        self.feature_norm = feature_norm
+
+    def compute_step(self, parameter, previous_step):
+        original_updated = parameter + previous_step
+        new_updated = self.feature_norm * normalize(original_updated)
+        step = new_updated - parameter
+        return step, []
+
