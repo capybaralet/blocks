@@ -1,6 +1,9 @@
 import re
 
 
+def get_roles(var):
+    return getattr(var.tag, 'roles', [])
+
 def add_role(var, role):
     r"""Add a role to a given Theano variable.
 
